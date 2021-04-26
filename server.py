@@ -1,4 +1,6 @@
 import json
+import datetime
+
 from flask import Flask,render_template,request,redirect,flash,url_for
 
 
@@ -16,6 +18,15 @@ def loadCompetitions():
 
 app = Flask(__name__)
 app.secret_key = 'something_special'
+
+@app.template_filter('is_past')
+def is_past(value, format="%Y-%m-%d %H:%M:%S"):
+    """Format a date time to (Default): d Mon YYYY HH:MM P"""
+    if value is None:
+        return True
+    if datetime.datetime.strptime(value, format) > datetime.datetime.now():
+        return False
+
 
 competitions = loadCompetitions()
 clubs = loadClubs()
@@ -46,9 +57,13 @@ def purchasePlaces():
     competition = [c for c in competitions if c['name'] == request.form['competition']][0]
     club = [c for c in clubs if c['name'] == request.form['club']][0]
     placesRequired = int(request.form['places'])
-    competition['numberOfPlaces'] = int(competition['numberOfPlaces'])-placesRequired
-    flash('Great-booking complete!')
-    return render_template('welcome.html', club=club, competitions=competitions)
+    if datetime.datetime.strptime(competition['date'], "%Y-%m-%d %H:%M:%S") > datetime.datetime.now():
+        competition['numberOfPlaces'] = int(competition['numberOfPlaces'])-placesRequired
+        flash('Great-booking complete!')
+        return render_template('welcome.html', club=club, competitions=competitions)
+    else:
+        flash('Sorry, past competition cannot be booked')
+        return render_template('welcome.html', club=club, competitions=competitions)
 
 
 # TODO: Add route for points display
