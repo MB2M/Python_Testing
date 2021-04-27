@@ -4,7 +4,7 @@ import json
 import server
 
 
-class TestBookPastCompetition:
+class TestPointsUpdate:
 
     def setup_method(self):
         server.app.config['TESTING'] = True
