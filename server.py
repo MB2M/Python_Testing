@@ -58,7 +58,10 @@ def purchasePlaces():
     club = [c for c in clubs if c['name'] == request.form['club']][0]
     placesRequired = int(request.form['places'])
 
-    if placesRequired > 12:
+    if placesRequired > int(club['points']):
+        flash('Sorry, you dont have the required points')
+        return redirect(url_for('book', competition=competition['name'], club=club['name']))
+    elif placesRequired > 12:
         flash('Sorry, you can not redeem more than 12 points')
         return redirect(url_for('book', competition=competition['name'], club=club['name']))
     elif datetime.datetime.strptime(competition['date'], "%Y-%m-%d %H:%M:%S") < datetime.datetime.now():
@@ -69,6 +72,7 @@ def purchasePlaces():
         club['points'] = int(club['points']) - placesRequired
         flash('Great-booking complete!')
         return render_template('welcome.html', club=club, competitions=competitions)
+
 
 @app.route('/board', methods=['GET'])
 def board():
