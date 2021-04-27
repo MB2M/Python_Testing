@@ -31,21 +31,19 @@ class TestRedeem:
         }, follow_redirects=True)
 
     def test_redeem_excess(self):
-        competition = self.competitions[0]
-        number_of_places = int(competition['numberOfPlaces'])
+        competition = self.competitions[1]
         club = self.clubs[0]
-        places_required = int(club['points']) + 1
+        places_required = max(int(club['points']) + 1, 13)
         rv = self.redeem_points(club['name'], competition['name'], places_required)
         assert rv.status_code == 200
         assert "Sorry, you dont have the required points" in rv.data.decode('utf-8')
-        assert competition['numberOfPlaces'] == server.competitions[0]['numberOfPlaces']
+        assert competition['numberOfPlaces'] == server.competitions[1]['numberOfPlaces']
 
     def test_redeem_success(self):
-        competition = self.competitions[0]
-        number_of_places = int(competition['numberOfPlaces'])
+        competition = self.competitions[1]
         club = self.clubs[0]
-        places_required = int(club['points']) - 1
+        places_required = min(int(club['points']) - 1, 12)
         rv = self.redeem_points(club['name'], competition['name'], places_required)
         assert rv.status_code == 200
         assert "Great-booking complete!" in rv.data.decode('utf-8')
-        assert int(competition['numberOfPlaces']) - places_required == server.competitions[0]['numberOfPlaces']
+        assert int(competition['numberOfPlaces']) - places_required == server.competitions[1]['numberOfPlaces']

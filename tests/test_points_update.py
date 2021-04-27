@@ -30,10 +30,10 @@ class TestPointsUpdate:
         }, follow_redirects=True)
 
     def test_points_update(self):
-        competition = self.competitions[0]
+        competition = self.competitions[1]
         club = self.clubs[0]
         places_required = 1
         rv = self.redeem_points(club['name'], competition['name'], places_required)
         assert rv.status_code == 200
-        assert server.clubs[0]['points'] == int(club['points']) - 1
-        assert "Points available: " + str(int(club['points']) - 1) in rv.data.decode('utf-8')
+        assert server.clubs[0]['points'] == int(club['points']) - places_required
+        assert "Points available: " + str(int(club['points']) - places_required) in rv.data.decode('utf-8')
