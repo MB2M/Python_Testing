@@ -15,7 +15,6 @@ class TestServer:
         self.default_clubs = server.clubs.copy()
 
     def clean_up(self):
-        print(server.competitions)
         server.competitions = self.default_competitions.copy()
         server.clubs = self.default_clubs.copy()
 
