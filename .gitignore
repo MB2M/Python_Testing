@@ -9,3 +9,5 @@ Scripts
 .vscode
 .pytest_cache
 pyvenv.cfg
+htmlcov
+.coverage
