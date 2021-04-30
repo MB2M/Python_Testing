@@ -33,8 +33,8 @@ class TestServer:
     def club_sample(self):
         data = [
             {"name":"Club One", "email":"mail_one@sample.com", "points":"6"},
-            {"name":"Club Two", "email":"mail_two@sample.com", "points":"11"},
-            {"name":"Club Three", "email":"mail_three@sample.com", "points":"18"}
+            {"name":"Club Two", "email":"mail_two@sample.com", "points":"13"},
+            {"name":"Club Three", "email":"mail_three@sample.com", "points":"70"}
         ]
         server.clubs = data
         return data
@@ -66,8 +66,8 @@ class TestServer:
         places_required = 1
         rv = self.redeem_points(club['name'], competition['name'], places_required)
         assert rv.status_code == 200
-        assert int(server.clubs[0]['points']) == int(club['points']) - places_required
-        assert "Points available: " + str(int(club['points']) - places_required) in rv.data.decode('utf-8')
+        assert int(server.clubs[0]['points']) == int(club['points']) - places_required * 3
+        assert "Points available: " + str(int(club['points']) - places_required * 3) in rv.data.decode('utf-8')
 
     def test_book_old(self, club_sample, competition_sample):
         competition = competition_sample[0].copy()
