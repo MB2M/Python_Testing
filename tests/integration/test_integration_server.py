@@ -4,8 +4,6 @@ import pytest
 import server
 
 
-
-
 class TestServer:
 
     def setup_method(self):
@@ -38,19 +36,6 @@ class TestServer:
         server.clubs = data
         return data
 
-    def test_load_clubs(self):
-        with open('clubs.json') as c:
-            listOfClubs = json.load(c)['clubs']
-        assert server.loadClubs() == listOfClubs
-
-    def test_load_competitions(self):
-        with open('competitions.json') as c:
-            listOfCompetitions = json.load(c)['competitions']
-        assert server.loadCompetitions() == listOfCompetitions
-
-    def test_index(self):
-        response = self.app.get('/')
-        assert response.status_code == 200
 
     def redeem_points(self, club, competition, places_required):
         return self.app.post('/purchasePlaces', data={
@@ -86,9 +71,14 @@ class TestServer:
         assert competition['numberOfPlaces'] == server.competitions[1]['numberOfPlaces']
         assert "Sorry, you can not redeem more than 12 points" in rv.data.decode('utf-8')
 
-    def test_board(self):
-        rv = self.app.get('/board', follow_redirects=True)
+    def test_redeem_over_max_point(self, club_sample, competition_sample):
+        competition = competition_sample[1].copy()
+        club = club_sample[2].copy()
+        places_required = 26
+        rv = self.redeem_points(club['name'], competition['name'], places_required)
         assert rv.status_code == 200
+        assert competition['numberOfPlaces'] == server.competitions[1]['numberOfPlaces']
+        assert "Sorry, you dont have the required points" in rv.data.decode('utf-8')
 
     def post_email(self, email):
         return self.app.post('/showSummary', data={

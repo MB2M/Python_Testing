@@ -21,7 +21,6 @@ app.secret_key = 'something_special'
 
 @app.template_filter('is_past')
 def is_past(value, format="%Y-%m-%d %H:%M:%S"):
-    """Format a date time to (Default): d Mon YYYY HH:MM P"""
     if value is None:
         return True
     if datetime.datetime.strptime(value, format) > datetime.datetime.now():
